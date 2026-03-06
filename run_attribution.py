@@ -89,7 +89,7 @@ if __name__ == "__main__":
             attribution_metric = partial(metric, mean=True, loss=True)
             if args.level == 'edge':
                 attribute(model, graph, dataloader, attribution_metric, args.method, args.ablation,
-                            ig_steps=args.ig_steps, optimal_ablation_path=args.optimal_ablation_path,
+                            ig_steps=args.ig_steps,
                             intervention_dataloader=dataloader,
                             pf_gim_filter_quantile=args.pf_gim_filter_quantile,
                             pf_gim_filter_mode=args.pf_gim_filter_mode)
