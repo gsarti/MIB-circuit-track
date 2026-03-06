@@ -52,6 +52,9 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--num-examples", type=int, default=100)
     parser.add_argument("--circuit-dir", type=str, default='circuits')
+    parser.add_argument("--pf-gim-filter-quantile", type=float, default=0.35)
+    parser.add_argument("--pf-gim-filter-mode", type=str, default='proximity',
+                        choices=['proximity', 'norm', 'cosine', 'logit', 'logit*proximity', 'random', 'none'])
     args = parser.parse_args()
 
     for model_name in args.models:
@@ -85,11 +88,13 @@ if __name__ == "__main__":
             metric = get_metric('logit_diff', task, model.tokenizer, model)
             attribution_metric = partial(metric, mean=True, loss=True)
             if args.level == 'edge':
-                attribute(model, graph, dataloader, attribution_metric, args.method, args.ablation, 
+                attribute(model, graph, dataloader, attribution_metric, args.method, args.ablation,
                             ig_steps=args.ig_steps, optimal_ablation_path=args.optimal_ablation_path,
-                            intervention_dataloader=dataloader)
+                            intervention_dataloader=dataloader,
+                            pf_gim_filter_quantile=args.pf_gim_filter_quantile,
+                            pf_gim_filter_mode=args.pf_gim_filter_mode)
             else:
-                attribute_node(model, graph, dataloader, attribution_metric, args.method, 
+                attribute_node(model, graph, dataloader, attribution_metric, args.method,
                                 args.ablation, neuron=args.level == 'neuron', ig_steps=args.ig_steps,
                                 optimal_ablation_path=args.optimal_ablation_path,
                                 intervention_dataloader=dataloader)
